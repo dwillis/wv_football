@@ -1,13 +1,13 @@
-```{r}
+```{r, output=FALSE}
 library(tidyverse)
 ```
 
-```{r}
+```{r, output=FALSE}
 games <- read_csv("scores.csv")
 wv_games <- games |> filter(home_team_state == 'WV', visiting_team_state == 'WV')
 ```
 
-Calculate the average differential by year for WV games
+## Calculate the average differential by year for WV games
 
 ```{r}
 wv_by_year <- wv_games |> 
@@ -18,6 +18,8 @@ wv_by_year <- wv_games |>
   )
 ```
 
+
+## Make a bar chart of average differential
 
 ```{r}
 ggplot() + 
