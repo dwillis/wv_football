@@ -1,0 +1,62 @@
+```{r}
+library(tidyverse)
+```
+
+```{r}
+games <- read_csv("scores.csv")
+wv_games <- games |> filter(home_team_state == 'WV', visiting_team_state == 'WV')
+```
+
+Calculate the average differential by year for WV games
+
+```{r}
+wv_by_year <- wv_games |> 
+  group_by(year) |> 
+  summarise(
+    avg_diff = mean(differential),
+    median_diff = median(differential)
+  )
+```
+
+
+```{r}
+ggplot() + 
+  geom_bar(data=wv_by_year, aes(x=year, weight=avg_diff)) +
+  labs(
+    title="Pulling away", 
+    subtitle = "Average margin of victory is more than 30 points this season",
+    x="Year", 
+    y="Average Difference"
+) + theme_minimal()
+```
+
+## Are there more 40+ margin games?
+
+```{r}
+all_games <- wv_games |> 
+  group_by(year) |> 
+  summarise(all_games = n())
+
+forty_plus <- wv_games |> 
+  filter(differential >= 40) |> 
+  group_by(year) |> 
+  summarise(forty_plus_games = n())
+
+forty_with_pct <- all_games |> 
+  inner_join(forty_plus) |> 
+  mutate(pct = forty_plus_games/all_games *100) |> 
+  arrange(desc(pct))
+
+```
+```{r}
+ggplot() + 
+  geom_bar(data=forty_with_pct, aes(x=year, weight=pct)) +
+  labs(
+    title="Big Margins More Common", 
+    subtitle = "The percentage of games with a margin of 40 or more points is at a modern high",
+    x="Year", 
+    y="Percent"
+) + theme_minimal()
+```
+
+
