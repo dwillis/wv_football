@@ -13,6 +13,8 @@ wv_games <- games |> filter(home_team_state == 'WV', visiting_team_state == 'WV'
 wv_by_year <- wv_games |> 
   group_by(year) |> 
   summarise(
+    min_diff = min(differential),
+    max_diff = max(differential),
     avg_diff = mean(differential),
     median_diff = median(differential)
   )
