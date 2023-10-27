@@ -34,30 +34,34 @@ ggplot() +
 ) + theme_minimal()
 ```
 
-## Are there more 40+ margin games?
+## Are there more 35+ margin games?
 
 ```{r}
 all_games <- wv_games |> 
   group_by(year) |> 
   summarise(all_games = n())
 
-forty_plus <- wv_games |> 
-  filter(differential >= 40) |> 
+thirtyfive_plus <- wv_games |> 
+  filter(differential >= 35) |> 
   group_by(year) |> 
-  summarise(forty_plus_games = n())
+  summarise(thirtyfive_plus_games = n())
 
-forty_with_pct <- all_games |> 
-  inner_join(forty_plus) |> 
-  mutate(pct = forty_plus_games/all_games *100) |> 
+thirtyfive_with_pct <- all_games |> 
+  inner_join(thirtyfive_plus) |> 
+  mutate(pct = thirtyfive_plus_games/all_games *100) |> 
   arrange(desc(pct))
 
+all_games |> 
+  inner_join(thirtyfive_plus) |> 
+  mutate(pct = thirtyfive_plus_games/all_games *100) |> 
+  arrange(desc(pct))
 ```
 ```{r}
 ggplot() + 
-  geom_bar(data=forty_with_pct, aes(x=year, weight=pct)) +
+  geom_bar(data=thirtyfive_with_pct, aes(x=year, weight=pct)) +
   labs(
-    title="Big Margins More Common", 
-    subtitle = "The percentage of games with a margin of 40 or more points is at a modern high",
+    title="West Virginia High School Football's Lopsided Games", 
+    subtitle = "More than 45 percent of games this season have a margin of 35 or more points, a modern high.",
     x="Year", 
     y="Percent"
 ) + theme_minimal()
