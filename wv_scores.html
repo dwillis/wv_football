@@ -145,7 +145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 14 × 4
     year all_games thirtyfive_plus_games   pct
    &lt;dbl&gt;     &lt;int&gt;                 &lt;int&gt; &lt;dbl&gt;
- 1  2023       400                   182  45.5
+ 1  2023       447                   202  45.2
  2  2022       540                   217  40.2
  3  2016       518                   169  32.6
  4  2019       545                   176  32.3
@@ -172,6 +172,90 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span> <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="wv_scores_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="teams-with-largest-average-margins-in-2023" class="level2">
+<h2 class="anchored" data-anchor-id="teams-with-largest-average-margins-in-2023">Teams with largest average margins in 2023</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>home_margins <span class="ot">&lt;-</span> wv_games <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">home_team_margin =</span> home_team_score <span class="sc">-</span> visiting_team_score) <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, home_team) <span class="sc">|&gt;</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">home_games =</span> <span class="fu">n</span>(), <span class="at">home_margin =</span> <span class="fu">sum</span>(home_team_margin))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'year'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>visiting_margins <span class="ot">&lt;-</span> wv_games <span class="sc">|&gt;</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">visiting_team_margin =</span> visiting_team_score <span class="sc">-</span> home_team_score) <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, visiting_team) <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">visiting_games =</span> <span class="fu">n</span>(), <span class="at">visiting_margin =</span> <span class="fu">sum</span>(visiting_team_margin))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'year'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>team_margins <span class="ot">&lt;-</span> home_margins <span class="sc">|&gt;</span> <span class="fu">left_join</span>(visiting_margins, <span class="fu">join_by</span>(home_team <span class="sc">==</span> visiting_team, year <span class="sc">==</span> year)) <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">home_games =</span> <span class="fu">replace_na</span>(home_games, <span class="dv">0</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">visiting_games =</span> <span class="fu">replace_na</span>(visiting_games, <span class="dv">0</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">home_margin =</span> <span class="fu">replace_na</span>(home_margin, <span class="dv">0</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">visiting_margin =</span> <span class="fu">replace_na</span>(visiting_margin, <span class="dv">0</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_games =</span> home_games <span class="sc">+</span> visiting_games, <span class="at">total_margin =</span> home_margin <span class="sc">+</span> visiting_margin) <span class="sc">|&gt;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">team =</span> home_team) <span class="sc">|&gt;</span> </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(team, year) <span class="sc">|&gt;</span> </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_margin =</span> total_margin<span class="sc">/</span>total_games) <span class="sc">|&gt;</span> </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(avg_margin))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'team'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+</div>
+</section>
+<section id="there-are-more-teams-with-average-margins-of-35-points-or-more-this-season-than-any-recent-year" class="level2">
+<h2 class="anchored" data-anchor-id="there-are-more-teams-with-average-margins-of-35-points-or-more-this-season-than-any-recent-year">There are more teams with average margins of 35 points or more this season than any recent year</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>team_margins <span class="sc">|&gt;</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(avg_margin <span class="sc">&gt;=</span> <span class="dv">35</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span> </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">teams =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(teams))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 2
+    year teams
+   &lt;dbl&gt; &lt;int&gt;
+ 1  2023     7
+ 2  2010     5
+ 3  2015     5
+ 4  2009     4
+ 5  2016     4
+ 6  2022     4
+ 7  2013     3
+ 8  2014     3
+ 9  2019     3
+10  2021     3
+11  2011     2
+12  2012     2
+13  2018     2
+14  2020     2</code></pre>
+</div>
+</div>
+</section>
+<section id="teams-with-the-largest-average-margin-of-victory-in-2023" class="level2">
+<h2 class="anchored" data-anchor-id="teams-with-the-largest-average-margin-of-victory-in-2023">Teams with the largest average margin of victory in 2023</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>team_margins <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(avg_margin <span class="sc">&gt;=</span> <span class="dv">35</span>, year <span class="sc">==</span> <span class="dv">2023</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 3
+# Groups:   team [7]
+  team             year avg_margin
+  &lt;chr&gt;           &lt;dbl&gt;      &lt;dbl&gt;
+1 Huntington       2023       49  
+2 Williamstown     2023       44.4
+3 Cameron          2023       42.1
+4 Greenbrier West  2023       42.1
+5 Hurricane        2023       41.8
+6 Martinsburg      2023       41.2
+7 Wahama           2023       36.6</code></pre>
 </div>
 </div>
 </section>

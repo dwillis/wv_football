@@ -67,4 +67,47 @@ ggplot() +
 ) + theme_minimal()
 ```
 
+## Teams with largest average margins in 2023
+
+```{r}
+home_margins <- wv_games |> 
+  mutate(home_team_margin = home_team_score - visiting_team_score) |> 
+  group_by(year, home_team) |> 
+  summarize(home_games = n(), home_margin = sum(home_team_margin))
+  
+
+visiting_margins <- wv_games |> 
+  mutate(visiting_team_margin = visiting_team_score - home_team_score) |> 
+  group_by(year, visiting_team) |> 
+  summarize(visiting_games = n(), visiting_margin = sum(visiting_team_margin))
+
+team_margins <- home_margins |> left_join(visiting_margins, join_by(home_team == visiting_team, year == year)) |> 
+  mutate(home_games = replace_na(home_games, 0)) |> 
+  mutate(visiting_games = replace_na(visiting_games, 0)) |> 
+  mutate(home_margin = replace_na(home_margin, 0)) |> 
+  mutate(visiting_margin = replace_na(visiting_margin, 0)) |> 
+  mutate(total_games = home_games + visiting_games, total_margin = home_margin + visiting_margin) |>
+  rename(team = home_team) |> 
+  group_by(team, year) |> 
+  summarize(avg_margin = total_margin/total_games) |> 
+  arrange(desc(avg_margin))
+
+```
+
+## There are more teams with average margins of 35 points or more this season than any recent year
+
+```{r}
+team_margins |> 
+  filter(avg_margin >= 35) |> 
+  group_by(year) |> 
+  summarise(teams = n()) |> 
+  arrange(desc(teams))
+```
+
+## Teams with the largest average margin of victory in 2023
+
+```{r}
+team_margins |> 
+  filter(avg_margin >= 35, year == 2023)
+```
 
