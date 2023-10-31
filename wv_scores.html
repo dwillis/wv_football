@@ -145,7 +145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 14 × 4
     year all_games thirtyfive_plus_games   pct
    &lt;dbl&gt;     &lt;int&gt;                 &lt;int&gt; &lt;dbl&gt;
- 1  2023       447                   202  45.2
+ 1  2023       449                   202  45.0
  2  2022       540                   217  40.2
  3  2016       518                   169  32.6
  4  2019       545                   176  32.3
@@ -256,6 +256,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 5 Hurricane        2023       41.8
 6 Martinsburg      2023       41.2
 7 Wahama           2023       36.6</code></pre>
+</div>
+</div>
+</section>
+<section id="runaway-games---49-point-margins" class="level2">
+<h2 class="anchored" data-anchor-id="runaway-games---49-point-margins">Runaway Games - 49+ point margins</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>wv_games <span class="sc">|&gt;</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(differential <span class="sc">&gt;=</span> <span class="dv">49</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span> </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">games =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(games))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 2
+    year games
+   &lt;dbl&gt; &lt;int&gt;
+ 1  2023    78
+ 2  2022    73
+ 3  2015    54
+ 4  2021    53
+ 5  2016    50
+ 6  2013    49
+ 7  2018    48
+ 8  2019    48
+ 9  2014    44
+10  2020    40
+11  2010    38
+12  2009    37
+13  2012    35
+14  2011    34</code></pre>
+</div>
+</div>
+</section>
+<section id="runaway-games---70-point-margins" class="level2">
+<h2 class="anchored" data-anchor-id="runaway-games---70-point-margins">Runaway Games - 70+ point margins</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>wv_games <span class="sc">|&gt;</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(differential <span class="sc">&gt;=</span> <span class="dv">70</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span> </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">games =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(games))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 2
+    year games
+   &lt;dbl&gt; &lt;int&gt;
+ 1  2023    13
+ 2  2014     5
+ 3  2018     5
+ 4  2013     4
+ 5  2019     4
+ 6  2020     4
+ 7  2021     4
+ 8  2015     3
+ 9  2009     2
+10  2012     2
+11  2010     1
+12  2011     1
+13  2022     1</code></pre>
 </div>
 </div>
 </section>

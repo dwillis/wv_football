@@ -111,3 +111,23 @@ team_margins |>
   filter(avg_margin >= 35, year == 2023)
 ```
 
+## Runaway Games - 49+ point margins
+
+```{r}
+wv_games |> 
+  filter(differential >= 49) |> 
+  group_by(year) |> 
+  summarise(games = n()) |> 
+  arrange(desc(games))
+```
+
+## Runaway Games - 70+ point margins
+
+```{r}
+wv_games |> 
+  filter(differential >= 70) |> 
+  group_by(year) |> 
+  summarise(games = n()) |> 
+  arrange(desc(games))
+```
+
