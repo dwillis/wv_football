@@ -297,20 +297,19 @@
             const headers = lines[0].split(',');
 
             allGames = lines.slice(1).map(line => {
-                // Handle CSV with potential commas in team names
-                const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
-                const cleanValues = values.map(v => v.replace(/^"|"$/g, '').trim());
+                // Split by comma and trim each value
+                const values = line.split(',').map(v => v.trim());
 
                 return {
-                    year: cleanValues[0],
-                    date: cleanValues[1],
-                    home_team: cleanValues[2],
-                    home_team_score: cleanValues[3],
-                    home_team_state: cleanValues[4],
-                    visiting_team: cleanValues[5],
-                    visiting_team_score: cleanValues[6],
-                    visiting_team_state: cleanValues[7],
-                    differential: parseInt(cleanValues[8])
+                    year: values[0],
+                    date: values[1],
+                    home_team: values[2],
+                    home_team_score: values[3],
+                    home_team_state: values[4],
+                    visiting_team: values[5],
+                    visiting_team_score: values[6],
+                    visiting_team_state: values[7],
+                    differential: parseInt(values[8])
                 };
             });
         }
