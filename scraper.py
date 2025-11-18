@@ -2,9 +2,18 @@ import csv
 import requests
 from bs4 import BeautifulSoup
 
-years = [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+years = [2024, 2025]
 
+# Load existing games from scores.csv
 games = []
+try:
+    with open("scores.csv", "r") as f:
+        reader = csv.reader(f)
+        next(reader)  # Skip header
+        for row in reader:
+            games.append(row)
+except FileNotFoundError:
+    pass
 
 def state_from_team(team):
     if "(KY)" in team:
@@ -46,11 +55,15 @@ def state_from_team(team):
     return state
 
 for year in years:
-    print(year)
+    print(f"Scraping {year}...")
     url = f"http://wvtailgatecentral.com/hs/fb{year}/week_schedule.php?startdate={year}-08-01&enddate={year}-12-31"
     r = requests.get(url)
     soup = BeautifulSoup(r.text, "html.parser")
-    rows = soup.find('table').find_all('tr')[1:]
+    table = soup.find('table')
+    if not table:
+        print(f"No table found for {year}, skipping...")
+        continue
+    rows = table.find_all('tr')[1:]
     for row in rows:
         date = row.find_all('td')[0].text
         if "**" in row.find_all('td')[1].text:
